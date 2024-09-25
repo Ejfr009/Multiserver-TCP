@@ -1,69 +1,48 @@
-package py.una.server.tcp;
+package multiserver.tcp;
 
-import java.net.*;
-import java.util.Iterator;
-import java.io.*;
+import java.util.List;
 
-public class TCPServerHilo extends Thread {
+public class TCPControladorHilo extends Thread {
 
-    private Socket socket = null;
-
-    TCPMultiServer servidor;
+    public List<TCPServerHilo> hilosClientes;
+    int var;
     
-    public TCPServerHilo(Socket socket, TCPMultiServer servidor ) {
-        super("TCPServerHilo");
-        this.socket = socket;
-        this.servidor = servidor;
+    
+    public TCPControladorHilo() {
+        
+    }
+    
+    public void añadirHilo(TCPServerHilo Hilo)
+    {
+        this.hilosClientes.add(Hilo);
+    }
+    
+    public void actualizar()
+    {
+        for (int i = 0; i < this.hilosClientes.size(); i++) 
+        {
+            this.hilosClientes.get(i).actualizarUsuarios();
+        }
     }
 
     public void run() {
 
-        try {
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader (new InputStreamReader(socket.getInputStream()));
-            out.println("Bienvenido!");
-            String inputLine, outputLine;
-
-            while ((inputLine = in.readLine()) != null) {
-                System.out.println("Mensaje recibido: " + inputLine);
-                
-                //out.println(inputLine);
-                
-                //to-do: utilizar json
-                if (inputLine.equals("Bye")) {
-                    outputLine = "Usted apago el hilo";
-                    break;
-                    
-                }else if (inputLine.equals("Terminar todo")) {
-                    servidor.listening = false;
-                    outputLine = "Usted apago todo";
-                    break;
-                    
-                }else if (inputLine.split(":").length > 1) {
-                	String usuario = inputLine.split(":")[1]; 
-                	servidor.usuarios.add(usuario);
-                	outputLine = "Usuario/a "+usuario+"agregado";
-
-                }else {
-                	outputLine = "Lista de usuarios: " ;
-                               	
-                	Iterator<String> iter = servidor.usuarios.iterator();
-                	
-                    while (iter.hasNext()) { 
-                    	outputLine = outputLine + " - " + iter.next(); 
-                    } 
-                }
-                
-                
-                out.println(outputLine);
-            }
-            out.close();
-            in.close();
-            socket.close();
-            System.out.println("Finalizando Hilo");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+       while(true)
+       {
+           try
+           {
+                Thread.sleep(100); // 2000 milisegundos = 2 segundos
+           }
+           catch (InterruptedException e) 
+           {
+                System.exit(1);
+           }
+           
+           if(var != Base de datos)
+           {
+                actualizar();
+                var = Base de datos;
+           }
+       }
     }
 }

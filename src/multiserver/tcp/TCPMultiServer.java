@@ -1,21 +1,20 @@
-package py.una.server.tcp;
+package multiserver.tcp;
 
 import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.io.*;
 
 
 
 public class TCPMultiServer {
 
-	//variables compartidas
-	boolean listening = true;
-	List<TCPServerHilo> hilosClientes; //almacenar los hilos (no se utiliza en el ejemplo, se deja para que el alumno lo utilice)
-	List<String> usuarios; //almacenar una lista de usuarios (no se utiliza, se deja para que el alumno lo utilice)
-
+    //variables compartidas
+    boolean listening = true;
+    TCPControladorHilo controlador;
+	
     public void ejecutar() throws IOException {
         ServerSocket serverSocket = null;
+        controlador = new TCPControladorHilo();
+        controlador.start();
 
         try {
             serverSocket = new ServerSocket(4444);
@@ -23,12 +22,13 @@ public class TCPMultiServer {
             System.err.println("No se puede abrir el puerto: 4444.");
             System.exit(1);
         }
+        
         System.out.println("Puerto abierto: 4444.");
 
         while (listening) {
         	
-        	TCPServerHilo hilo = new TCPServerHilo(serverSocket.accept(), this);
-            hilosClientes.add(hilo);
+            TCPServerHilo hilo = new TCPServerHilo(serverSocket.accept(), this);
+            controlador.añadirHilo(hilo);
             hilo.start();
         }
 
@@ -38,10 +38,6 @@ public class TCPMultiServer {
     public static void main(String[] args) throws IOException {
     	
     	TCPMultiServer tms = new TCPMultiServer();
-    	
-    	tms.hilosClientes = new ArrayList<TCPServerHilo>();
-    	tms.usuarios = new ArrayList<String>();
-    	
     	tms.ejecutar();
     	
     }

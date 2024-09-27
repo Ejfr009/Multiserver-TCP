@@ -27,7 +27,7 @@ public class TCPMultiServer {
 
         while (listening) {
         	
-            TCPServerHilo hilo = new TCPServerHilo(serverSocket.accept(), this);
+            TCPServerHilo hilo = new TCPServerHilo(serverSocket.accept());
             controlador.añadirHilo(hilo);
             hilo.start();
         }

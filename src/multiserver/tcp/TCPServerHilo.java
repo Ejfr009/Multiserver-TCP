@@ -1,40 +1,51 @@
 package multiserver.tcp;
 
 import java.net.*;
-import java.util.Iterator;
 import java.io.*;
 
 public class TCPServerHilo extends Thread {
 
     private Socket socket = null;
-
-    TCPMultiServer servidor;
     
-    public TCPServerHilo(Socket socket, TCPMultiServer servidor ) {
+    public TCPServerHilo(Socket socket) {
         super("TCPServerHilo");
         this.socket = socket;
-        this.servidor = servidor;
     }
 
-    public void run() {
-
+    public void run(){
+        
+        String username; 
+        String password; 
+        boolean respuesta = true;
+        
         try {
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader (new InputStreamReader(socket.getInputStream()));
+            // Enviar el objeto serializado al servidor
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+ 
+            EstructuraDatos datos = (EstructuraDatos) in.readObject(); 
             
-            String inputLine, outputLine;
-
-            while (1) 
-            {
-               //
-            }
-            out.close();
-            in.close();
-            socket.close();
-            System.out.println("Finalizando Hilo");
-
+            username = datos.getUser();
+            password = datos.getPassword();
+            
+            // HACER LA LOGICA DE: VERIFICAR DATOS EN EL SERVIDOR
+            //
+            //
+            
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            out.writeObject(respuesta);
+             
         } catch (IOException e) {
+            // Manejo de errores de I/O
             e.printStackTrace();
+            System.out.println("Error de comunicación con el servidor.");
+        } catch (ClassNotFoundException e) {
+            // Manejo de errores en la deserialización (cuando no se encuentra la clase del objeto recibido)
+            e.printStackTrace();
+            System.out.println("Error en la lectura de datos: clase no encontrada.");
         }
+        
+        //socket.close();
+        //System.out.println("Finalizando Hilo");
+       
     }
 }

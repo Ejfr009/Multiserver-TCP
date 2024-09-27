@@ -2,6 +2,10 @@ package multiserver.tcp;
 
 import java.net.*;
 import java.io.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class TCPServerHilo extends Thread {
 
@@ -12,40 +16,47 @@ public class TCPServerHilo extends Thread {
         this.socket = socket;
     }
 
-    public void run(){
-        
+    @Override
+    public void run() {
         String username; 
         String password; 
-        boolean respuesta = true;
-        
+        boolean respuesta = false;  // Será `true` si las credenciales son correctas
+
         try {
-            // Enviar el objeto serializado al servidor
+            // Recibir el objeto serializado con los datos del cliente
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
- 
             EstructuraDatos datos = (EstructuraDatos) in.readObject(); 
-            
+
             username = datos.getUser();
             password = datos.getPassword();
-            
-            // HACER LA LOGICA DE: VERIFICAR DATOS EN EL SERVIDOR
-            //
-            //
-            
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-            out.writeObject(respuesta);
-             
-        } catch (IOException e) {
-            // Manejo de errores de I/O
-            e.printStackTrace();
-            System.out.println("Error de comunicación con el servidor.");
-        } catch (ClassNotFoundException e) {
-            // Manejo de errores en la deserialización (cuando no se encuentra la clase del objeto recibido)
-            e.printStackTrace();
-            System.out.println("Error en la lectura de datos: clase no encontrada.");
+
+            try ( // Verificar las credenciales en la base de datos
+                    Connection conn = DatabaseConnection.getConnection()) {
+                String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+                
+                try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                    stmt.setString(1, username);
+                    stmt.setString(2, password);
+                    
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        if (rs.next()) {
+                            respuesta = true;  // Credenciales válidas
+                        }
+                        
+                        // Enviar la respuesta al cliente
+                        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                        out.writeObject(respuesta);
+                    }
+                }
+            }
+
+        } catch (IOException | ClassNotFoundException | SQLException e) {
+        } finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+            }
         }
-        
-        //socket.close();
-        //System.out.println("Finalizando Hilo");
-       
     }
+
 }

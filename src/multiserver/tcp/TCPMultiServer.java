@@ -9,12 +9,12 @@ public class TCPMultiServer {
 
     //variables compartidas
     boolean listening = true;
-    TCPControladorHilo controlador;
+    //TCPControladorHilo controlador;
 	
     public void ejecutar() throws IOException {
         ServerSocket serverSocket = null;
-        controlador = new TCPControladorHilo();
-        controlador.start();
+        //controlador = new TCPControladorHilo();
+        //controlador.start();
 
         try {
             serverSocket = new ServerSocket(4444);
@@ -28,7 +28,7 @@ public class TCPMultiServer {
         while (listening) {
         	
             TCPServerHilo hilo = new TCPServerHilo(serverSocket.accept());
-            controlador.añadirHilo(hilo);
+            //controlador.añadirHilo(hilo);
             hilo.start();
         }
 

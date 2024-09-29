@@ -21,7 +21,7 @@ public class TCPControladorHilo extends Thread {
     {
         for (int i = 0; i < this.hilosClientes.size(); i++) 
         {
-            this.hilosClientes.get(i).actualizarUsuarios();
+            //this.hilosClientes.get(i).actualizarUsuarios();
         }
     }
 
@@ -38,10 +38,10 @@ public class TCPControladorHilo extends Thread {
                 System.exit(1);
            }
            
-           if(var != Base de datos)
+           //if(var != Base de datos)
            {
                 actualizar();
-                var = Base de datos;
+                //var = Base de datos;
            }
        }
     }

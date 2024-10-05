@@ -8,24 +8,31 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.Timer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
 
 public class TCPServerHilo extends Thread {
 
-    private Socket socket;
-    private EstructuraDatos datos;
-    private ObjectOutputStream out; 
-    private ObjectInputStream in; 
+    public Socket socket;
+    public EstructuraDatos datos;
+    public ObjectOutputStream out; 
+    public ObjectInputStream in; 
     private boolean respuesta;
-
     
-    public TCPServerHilo(Socket socket) {
+    public TCPMultiServer server;
+    private String Personas;
+    public TCPServerHilo(Socket socket, TCPMultiServer server) {
         super("TCPServerHilo");
         this.socket = socket;
         CrearConexion();
         this.respuesta = false; 
+        this.server=server;
         
     }
     
@@ -34,11 +41,8 @@ public class TCPServerHilo extends Thread {
     public void run() {
         
         
-        while(true)
-        {
-            login();
-            logout();
-        }
+        login();
+        
            
         //solucionar el while infinito
         //CerrarConexion();
@@ -50,19 +54,40 @@ public class TCPServerHilo extends Thread {
         try{
             while(!respuesta)
             {
-
+                
                 datos = (EstructuraDatos) in.readObject();
+                
                 validar(datos);
-
+                
                 out.writeObject(respuesta);
                 out.reset();
+                break;
             }
         }catch( IOException | ClassNotFoundException e){
             System.err.println("Error de login");
             System.exit(1);
         }
         
-        this.respuesta = false; 
+        server.enLinea.add(datos.getUser());
+        
+        System.out.println("sali");
+        Timer timer;
+        timer = new Timer(1050, (ActionEvent e) -> {
+            Personas="";
+            for (String nombre:server.enLinea){
+                Personas=Personas+"-"+nombre+"\n";
+            }
+            
+            try {
+                out.writeObject(Personas);
+            } catch (IOException ex) {
+                Logger.getLogger(TCPServerHilo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        timer.setRepeats(true); // Para que solo se ejecute una vez
+        timer.start();
+        ActualizadorSalir hiloSalir = new ActualizadorSalir(this);
+        hiloSalir.start();
     }
     
     private void logout()
@@ -81,6 +106,7 @@ public class TCPServerHilo extends Thread {
             System.err.println("Error de Stream");
             System.exit(1);
         }
+        
         
     }
     
@@ -119,7 +145,7 @@ public class TCPServerHilo extends Thread {
         } catch (SQLException e) {
             e.printStackTrace();
         }                  
-
+        
     }
     
 }

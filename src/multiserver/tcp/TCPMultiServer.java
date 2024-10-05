@@ -2,7 +2,8 @@ package multiserver.tcp;
 
 import java.net.*;
 import java.io.*;
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class TCPMultiServer {
@@ -10,7 +11,9 @@ public class TCPMultiServer {
     //variables compartidas
     boolean listening = true;
     //TCPControladorHilo controlador;
-	
+    public List<String> enLinea = new ArrayList<>();
+    
+    
     public void ejecutar() throws IOException {
         ServerSocket serverSocket = null;
         //controlador = new TCPControladorHilo();
@@ -27,9 +30,10 @@ public class TCPMultiServer {
 
         while (listening) {
         	
-            TCPServerHilo hilo = new TCPServerHilo(serverSocket.accept());
-            //controlador.añadirHilo(hilo);
+            TCPServerHilo hilo = new TCPServerHilo(serverSocket.accept(),this);
+            
             hilo.start();
+            
         }
 
         serverSocket.close();

@@ -3,11 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/marti/Desktop/Trabajo%20de%20SD/Multiserver-TCP/src/multiserver/tcp/TCPControladorHilo.java</file>
-            <file>file:/C:/Users/marti/Desktop/Trabajo%20de%20SD/Multiserver-TCP/src/multiserver/tcp/TCPMultiServer.java</file>
-            <file>file:/C:/Users/marti/Desktop/Trabajo%20de%20SD/Multiserver-TCP/src/multiserver/tcp/ActualizadorSalir.java</file>
-            <file>file:/C:/Users/marti/Desktop/Trabajo%20de%20SD/Multiserver-TCP/src/multiserver/tcp/TCPServerHilo.java</file>
-            <file>file:/C:/Users/marti/Desktop/Trabajo%20de%20SD/Multiserver-TCP/src/Libreria/EstructuraDatos.java</file>
+            <file>file:/C:/Users/EJFR0/OneDrive/Escritorio/Sistemas%20Distribuidos/Lab-Multiserver/Multiserver-TCP/src/multiserver/tcp/DatabaseConnection.java</file>
+            <file>file:/C:/Users/EJFR0/OneDrive/Escritorio/Sistemas%20Distribuidos/Lab-Multiserver/Multiserver-TCP/src/multiserver/tcp/TCPServerHilo.java</file>
+            <file>file:/C:/Users/EJFR0/OneDrive/Escritorio/Sistemas%20Distribuidos/Lab-Multiserver/Multiserver-TCP/src/multiserver/tcp/ActualizadorSalir.java</file>
+            <file>file:/C:/Users/EJFR0/OneDrive/Escritorio/Sistemas%20Distribuidos/Lab-Multiserver/Multiserver-TCP/src/multiserver/tcp/TCPMultiServer.java</file>
         </group>
     </open-files>
 </project-private>

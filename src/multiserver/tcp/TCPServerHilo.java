@@ -24,6 +24,7 @@ public class TCPServerHilo extends Thread {
     public ObjectOutputStream out; 
     public ObjectInputStream in; 
     private boolean respuesta;
+    Timer timer;
     
     public TCPMultiServer server;
     private String Personas;
@@ -40,12 +41,7 @@ public class TCPServerHilo extends Thread {
     @Override
     public void run() {
         
-        
         login();
-        
-           
-        //solucionar el while infinito
-        //CerrarConexion();
     }
     
     
@@ -54,14 +50,12 @@ public class TCPServerHilo extends Thread {
         try{
             while(!respuesta)
             {
-                
                 datos = (EstructuraDatos) in.readObject();
                 
                 validar(datos);
                 
                 out.writeObject(respuesta);
                 out.reset();
-                break;
             }
         }catch( IOException | ClassNotFoundException e){
             System.err.println("Error de login");
@@ -70,8 +64,7 @@ public class TCPServerHilo extends Thread {
         
         server.enLinea.add(datos.getUser());
         
-        System.out.println("sali");
-        Timer timer;
+        
         timer = new Timer(1050, (ActionEvent e) -> {
             Personas="";
             for (String nombre:server.enLinea){
@@ -81,8 +74,8 @@ public class TCPServerHilo extends Thread {
             try {
                 out.writeObject(Personas);
             } catch (IOException ex) {
-                Logger.getLogger(TCPServerHilo.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                timer.setRepeats(false);
+            } 
         });
         timer.setRepeats(true); // Para que solo se ejecute una vez
         timer.start();
@@ -90,11 +83,6 @@ public class TCPServerHilo extends Thread {
         hiloSalir.start();
     }
     
-    private void logout()
-    {
-      
-   
-    }
     
     private void CrearConexion()
     {
@@ -110,7 +98,7 @@ public class TCPServerHilo extends Thread {
         
     }
     
-    private void CerrarConexion()
+    public void CerrarConexion()
     {
         try {
             if (in != null) in.close();

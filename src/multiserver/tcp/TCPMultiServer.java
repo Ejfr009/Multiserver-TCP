@@ -16,8 +16,6 @@ public class TCPMultiServer {
     
     public void ejecutar() throws IOException {
         ServerSocket serverSocket = null;
-        //controlador = new TCPControladorHilo();
-        //controlador.start();
 
         try {
             serverSocket = new ServerSocket(4444);

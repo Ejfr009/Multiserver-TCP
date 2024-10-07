@@ -39,6 +39,7 @@ public class ActualizadorSalir extends Thread {
             Logger.getLogger(ActualizadorSalir.class.getName()).log(Level.SEVERE, null, ex);
         }
         serverHiloAux.server.enLinea.remove(nombre);
+        serverHiloAux.CerrarConexion();
     }    
         
     
